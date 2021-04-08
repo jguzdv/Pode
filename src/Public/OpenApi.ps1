@@ -1342,8 +1342,11 @@ function ConvertTo-PodeOAParameter
         deprecated = $Property.deprecated
         schema = @{
             type = $Property.type
-            format = $Property.format
         }
+    }
+
+    if (![string]::IsNullOrWhiteSpace($Property.format)) {
+        $prop.schema.format = $Property.format
     }
 
     # add enum specification, if present
