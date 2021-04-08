@@ -127,7 +127,10 @@ function ConvertTo-PodeOASchemaProperty
     # base schema type
     $schema = @{
         type = $Property.type
-        format = $Property.format
+    }
+
+    if (![string]::IsNullOrWhiteSpace($Property.format)) {
+        $schema.format = $Property.format
     }
 
     # schema refs
@@ -311,9 +314,13 @@ function Get-PodeOpenApiDefinitionInternal
                 deprecated = $_route.OpenApi.Deprecated
                 responses = $_route.OpenApi.Responses
                 parameters = $_route.OpenApi.Parameters
-                requestBody = $_route.OpenApi.RequestBody
                 servers = $null
                 security = @($_route.OpenApi.Authentication)
+            }
+
+            # add request body to methods supporting request bodies
+            if ($method -inotin @('get','delete')) {
+                $def.paths[$_route.OpenApi.Path][$method].requestBody = $_route.OpenApi.RequestBody
             }
 
             # add global authentication for route
