@@ -1343,8 +1343,12 @@ function ConvertTo-PodeOAParameter
         schema = @{
             type = $Property.type
             format = $Property.format
-            enum = $Property.enum
         }
+    }
+
+    # add enum specification, if present
+    if ($Property.enum) {
+        $prop.schema.enum = $Property.enum
     }
 
     # remove default for required parameter
